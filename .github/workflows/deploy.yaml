@@ -128,7 +128,7 @@ jobs:
           --set image.tag=${{ env.IMAGE_TAG }}
     - name: Run Helm test
       run: |
-        oc expose svc/{{ .Values.service.name | default "api-app-service" }} 
+        oc expose svc/{{ .Values.service.name }} 
         helm test api-app --namespace ameen2607-dev 
     
     #this if you want to deploy using manifest instead of helm
