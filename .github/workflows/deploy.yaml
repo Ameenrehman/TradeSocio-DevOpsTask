@@ -127,9 +127,9 @@ jobs:
           --set image.repository=593793064016.dkr.ecr.us-east-1.amazonaws.com/myecr-ameen1 \
           --set image.tag=${{ env.IMAGE_TAG }}
     - name: Run Helm test
-    #  run: helm test api-app --namespace ameen2607-dev
-      run: oc run curl-test --rm -i --tty --image=curlimages/curl:latest -- \
-            sh -c 'curl -v http://api-app-service:5000/api'
+      run: helm test api-app --namespace ameen2607-dev
+     # run: oc run curl-test --rm -i --tty --image=curlimages/curl:latest -- \
+     #       sh -c 'curl -v http://api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/api'
       
     #this if you want to deploy using manifest instead of helm
     #- name: Apply deployment YAML

@@ -8,6 +8,5 @@ spec:
   containers:
     - name: curl
       image: curlimages/curl:latest
-      command: ["curl"]
-      args: ["-v", "http://{{ .Values.Route.host }}/api"]
+      command: ["sh", "-c", "curl -sf http://{{ .Values.Route.host }}/api || exit 1"]
   restartPolicy: Never
