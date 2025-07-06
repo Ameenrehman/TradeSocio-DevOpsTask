@@ -70,7 +70,9 @@ jobs:
         curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
         chmod +x container-structure-test-linux-amd64
         sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
-
+    - name: Pull image from ECR for structure tests
+      run: |
+        docker pull ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:${{ env.IMAGE_TAG }}
     - name: Run Container Structure Tests
       run: |
         container-structure-test test \
