@@ -9,5 +9,4 @@ spec:
   containers:
     - name: curl
       image: curlimages/curl:latest
-      command: [ "curl" ]
-      args: [ "--fail", "--silent", "--show-error", "http://{{ .Values.Route.host }}/api" ]
+      command: ["curl", "http://{{ .Values.service.name }}:{{ .Values.service.targetPort }}/api"]
