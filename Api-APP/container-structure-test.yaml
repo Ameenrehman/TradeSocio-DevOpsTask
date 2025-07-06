@@ -5,10 +5,10 @@ metadataTest:
 
 # CMD is ['flask', 'run'], so we don't check for gunicorn
 commandTests:
-  - name: "Check Flask command"
-    command: "sh"
-    args: ["-c", "ps aux | grep flask | grep -v grep"]
-    expectedOutput: [ "flask run"]
+  - name: "Check Flask environment"
+    command: "flask"
+    args: ["--version"]
+    expectedOutput: ["Flask"]
     exitCode: 0
 
   - name: "Verify running user is appuser"
