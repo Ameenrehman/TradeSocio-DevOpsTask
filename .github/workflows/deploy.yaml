@@ -1,0 +1,70 @@
+name: OpenShift Deployment
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'node-backend-app1/**'
+      - 'k8s/node-backend-app1/**'
+    
+  workflow_dispatch:
+env:
+  IMAGE_TAG: api-app-${{ github.sha }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout source code
+      uses: actions/checkout@v3
+
+    - name: Install OpenShift CLI
+      run: |
+        curl -LO "https://mirror.openshift.com/pub/openshift-v4/clients/oc/latest/linux/oc.tar.gz"
+        tar -xzf oc.tar.gz
+        sudo mv oc /usr/local/bin/oc
+        oc version 
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+    - name: Log in to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
+
+    - name: Build Docker image
+      run: docker build -t ${{ steps.login-ecr.outputs.registry }}/myecr-ameen:$IMAGE_TAG ./node-backend-app1
+
+    - name: Push Docker image to ECR
+      run: docker push ${{ steps.login-ecr.outputs.registry }}/myecr-ameen:$IMAGE_TAG
+   
+    - name: Log in to OpenShift
+      uses: redhat-actions/oc-login@v1
+      with:
+          openshift_server_url: ${{ secrets.OPENSHIFT_SERVER_URL }}
+          openshift_token: ${{ secrets.OPENSHIFT_TOKEN }}
+          insecure_skip_tls_verify: true
+          namespace: ameen2607-dev
+
+    - name: Apply deployment YAML
+      run: |
+          IMAGE="${{ steps.login-ecr.outputs.registry }}/myecr-ameen:$IMAGE_TAG"
+          sed "s|__IMAGE__|$IMAGE|g" k8s/deployment.yaml > k8s/deployment-patched.yaml
+          oc apply -f k8s/deployment-patched.yaml
+        #run: oc apply -f k8s/node-backend-app1/deployment.yml
+
+    - name: Apply service YAML
+      run: oc apply -f k8s/service.yaml
+
+    - name: Apply route YAML
+      run: oc apply -f k8s/route.yaml
+
+    - name: Show app URL
+      run: |
+        echo "App route:"
+        oc get route api-app -o jsonpath='{.spec.host}{"\n"}'
+
