@@ -15,13 +15,14 @@ Deployment:
 service:
   type: NodePort
   port: 80
+  host: api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com
   targetPort: 5000
   name: api-app-service
   namespace: ameen2607-dev
 
 Route:
   name: "api-app-route"
-  host: api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com
+  host: api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com
   namespace: ameen2607-dev
   termination: edge
   port: 5000
