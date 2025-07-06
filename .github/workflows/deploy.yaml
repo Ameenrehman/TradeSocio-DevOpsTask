@@ -52,14 +52,15 @@ jobs:
 
     - name: Create imagePullSecret for ECR
       run: |
-        --docker-server=593793064016.dkr.ecr.eu-north-1.amazonaws.com \
-        --docker-username=AWS \
-        --docker-password=$(aws ecr get-login-password --region us-east-1) \
-        --docker-email=ameen2607.com \
-        --namespace=ameen2607-dev \
-        --dry-run=client -o yaml | kubectl apply -f -
+       oc create secret docker-registry ecr-secret \
+          --docker-server=593793064016.dkr.ecr.us-east-1.amazonaws.com \
+          --docker-username=AWS \
+          --docker-password=$(aws ecr get-login-password --region us-east-1) \
+          --docker-email=ameen2607.com \
+          --namespace=ameen2607-dev \
+          --dry-run=client -o yaml | kubectl apply -f -
 
-        oc secrets link default ecr-secret --for=pull || true
+       oc secrets link default ecr-secret --for=pull || true
  
     - name: Apply deployment YAML
       run: |
