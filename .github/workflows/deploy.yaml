@@ -7,6 +7,7 @@ on:
     paths:
       - 'Api-APP/**'
       - 'k8s/**'
+      - 'api-app-chart/**'
     
   workflow_dispatch:
 env:

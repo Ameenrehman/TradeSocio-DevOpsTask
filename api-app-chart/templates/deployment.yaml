@@ -13,7 +13,7 @@ spec:
       labels:
         app: api-app
     spec:
-      #serviceAccountName: {{ include "api-app.serviceAccountName" . }}
+      #serviceAccountName: {{ include "api-app.serviceAccountName" . }} 
       containers:
         - name: api-app
           image: '{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}'
