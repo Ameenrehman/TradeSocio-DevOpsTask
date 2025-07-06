@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Values.Deployment.name | default "api-app" }}
+  namespace: {{ .Values.Deployment.namespace | default "ameen2607-dev" }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: api-app
+  template:
+    metadata:
+      labels:
+        app: api-app
+    spec:
+      #serviceAccountName: {{ include "api-app.serviceAccountName" . }}
+      containers:
+        - name: api-app
+          image: '{{ .Values.image.repository }}:{{ .Values.image.tag | default "latest" }}'
+          ports:
+            - containerPort: {{ .Values.service.targetPort | default 5000 }}

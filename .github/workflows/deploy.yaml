@@ -87,19 +87,34 @@ jobs:
           --dry-run=client -o yaml | kubectl apply -f -
 
        oc secrets link default ecr-secret --for=pull || true
- 
-    - name: Apply deployment YAML
+    - name: Install Helm
+        # Use the official Helm installation script for Linux
       run: |
-          IMAGE="${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG"
-          sed "s|__IMAGE__|$IMAGE|g" k8s/deployment.yaml > k8s/deployment-patched.yaml
-          oc apply -f k8s/deployment-patched.yaml
+          curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+        # This script downloads the correct Helm binary for the OS and places it in /usr/local/bin,
+        # which is typically already in the GitHub Actions runner's PATH.
+    #- name: Change image name in values.yaml
+    #  run: |
+    #      IMAGE="${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG"
+        #  sed "s|__IMAGE__|$IMAGE|g" api-app-chart/values.yaml     
+    - name: Deploy via Helm
+      run: |
+         helm upgrade --install api-app ./api-app-chart \
+          --namespace ameen2607-dev \
+          --set image.repository=593793064016.dkr.ecr.us-east-1.amazonaws.com/myecr-ameen1 \
+          --set image.tag=${{ env.IMAGE_TAG }}
+    #- name: Apply deployment YAML
+    #  run: |
+    #      IMAGE="${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG"
+    #      sed "s|__IMAGE__|$IMAGE|g" k8s/deployment.yaml > k8s/deployment-patched.yaml
+    #      oc apply -f k8s/deployment-patched.yaml
         #run: oc apply -f k8s/node-backend-app1/deployment.yml
 
-    - name: Apply service YAML
-      run: oc apply -f k8s/service.yaml
+    #- name: Apply service YAML
+    #  run: oc apply -f k8s/service.yaml
 
-    - name: Apply route YAML
-      run: oc apply -f k8s/route.yaml
+    #- name: Apply route YAML
+    #  run: oc apply -f k8s/route.yaml
 
     - name: Show app URL
       run: |

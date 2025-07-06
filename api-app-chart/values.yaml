@@ -1,0 +1,37 @@
+replicaCount: 2
+
+image:
+  repository: 593793064016.dkr.ecr.us-east-1.amazonaws.com/myecr-ameen1
+  tag: latest
+  pullPolicy: IfNotPresent
+
+Deployment:
+  name: "api-app"
+  namespace: ameen2607-dev
+  labels:
+    app: api-app
+    chart: api-app-chart
+    release: api-app-release
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 5000
+  name: api-app-service
+  namespace: ameen2607-dev
+
+Route:
+  name: "api-app-route"
+  host: api-app-dev.apps.sandbox1234.opentlc.com
+  namespace: ameen2607-dev
+  termination: edge
+  port: 5000
+
+resources: {}
+
+serviceAccount:
+  create: true
+  name: ""
+
+rbac:
+  create: true
+

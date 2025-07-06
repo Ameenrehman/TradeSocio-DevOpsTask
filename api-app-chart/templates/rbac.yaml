@@ -1,0 +1,22 @@
+{{- if .Values.rbac.create }}
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: {{ include "api-app.fullname" . }}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "api-app.fullname" . }}-binding
+subjects:
+  - kind: ServiceAccount
+    name: {{ include "api-app.serviceAccountName" . }}
+roleRef:
+  kind: Role
+  name: {{ include "api-app.fullname" . }}
+  apiGroup: rbac.authorization.k8s.io
+{{- end }}
