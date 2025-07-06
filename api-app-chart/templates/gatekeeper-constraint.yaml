@@ -2,6 +2,7 @@ apiVersion: constraints.gatekeeper.sh/v1beta1
 kind: K8sRequiredNonRootSA
 metadata:
   name: non-default-sa-nonroot
+  namespace: ameen2607-dev
   annotations:
     "helm.sh/hook": post-install
     "helm.sh/hook-delete-policy": before-hook-creation

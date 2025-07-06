@@ -94,12 +94,17 @@ jobs:
           curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
         # This script downloads the correct Helm binary for the OS and places it in /usr/local/bin,
         # which is typically already in the GitHub Actions runner's PATH.
-    - name: Install Gatekeeper
+    - name: Install Gatekeeper via Helm in dev namespace
       run: |
-        echo "Installing Gatekeeper..."
-        oc apply -f https://raw.githubusercontent.com/open-policy-agent/gatekeeper/release-3.13/deploy/gatekeeper.yaml
-        echo "Waiting for Gatekeeper pods to be ready..."
-        oc rollout status deployment/gatekeeper-controller-manager -n ameen2607-dev --timeout=120s
+        helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts
+        helm repo update
+        helm upgrade --install gatekeeper gatekeeper/gatekeeper \
+            --namespace ameen2607-dev \
+            --create-namespace \
+            --set replicas=1 \
+            --set controllerManager.webhook.port=8443 \
+            --set audit.enabled=false \
+            --set validatingWebhookFailurePolicy=Ignore
 
     #- name: Change image name in values.yaml
     #  run: |
