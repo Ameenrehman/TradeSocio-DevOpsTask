@@ -19,6 +19,25 @@ jobs:
     steps:
     - name: Checkout source code
       uses: actions/checkout@v3
+    
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('Api-APP/requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+    # Cache Docker buildx layers
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v3
+
+    - name: Cache Docker layers
+      uses: actions/cache@v3
+      with:
+        path: /tmp/.buildx-cache
+        key: ${{ runner.os }}-buildx-${{ github.sha }}
+        restore-keys: |
+          ${{ runner.os }}-buildx-
 
     - name: Install OpenShift CLI
       run: |
@@ -37,7 +56,14 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Build Docker image
-      run: docker build -t ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG ./Api-APP
+      uses: docker/build-push-action@v5
+      with:
+        context: ./Api-APP
+        push: true
+        tags: ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:${{ env.IMAGE_TAG }}
+        cache-from: type=local,src=/tmp/.buildx-cache
+        cache-to: type=local,dest=/tmp/.buildx-cache
+      #run: docker build -t ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG ./Api-APP
 
     - name: Push Docker image to ECR
       run: docker push ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG
