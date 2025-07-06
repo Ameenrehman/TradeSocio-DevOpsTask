@@ -8,6 +8,5 @@ spec:
   containers:
     - name: curl
       image: curlimages/curl:latest
-      command: ["sh", "-c", "curl -sf http://{{ .Values.service.host }}/api || exit 1"]
+      command: ["sh", "-c", "curl -sf http://api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/api || exit 1"]
   restartPolicy: Never
-  
