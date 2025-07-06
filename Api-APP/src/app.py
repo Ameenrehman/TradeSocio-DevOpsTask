@@ -1,22 +1,33 @@
 import os
 from flask import Flask, request
-from prometheus_client import generate_latest, Counter, Gauge
+from prometheus_client import generate_latest, Counter, Gauge, Histogram, Summary
 
 # --- Prometheus Metrics ---
-# Counter for total requests
+# Total HTTP requests by method, endpoint and status
 REQUEST_COUNT = Counter(
     'http_requests_total',
     'Total HTTP Requests',
     ['method', 'endpoint', 'status_code']
 )
 
-# Gauge for a hypothetical resource usage (e.g., current connections)
-# GAUGE_CONNECTIONS = Gauge(
-#     'current_connections',
-#     'Current number of active connections'
-# )
-# In a real app, this would be incremented/decremented around connection establishment/teardown.
-# For this simple demo, we'll just expose it.
+# Histogram for request duration in seconds
+REQUEST_LATENCY = Histogram(
+    'http_request_duration_seconds',
+    'Histogram of request processing time',
+    ['method', 'endpoint']
+)
+
+# Summary for request size
+REQUEST_SIZE = Summary(
+    'http_request_size_bytes',
+    'Summary of request sizes in bytes'
+)
+
+# Gauge for number of in-progress requests
+IN_PROGRESS = Gauge(
+    'http_requests_in_progress',
+    'Number of HTTP requests in progress'
+)
 
 # --- Flask Application ---
 app = Flask(__name__)
@@ -25,21 +36,23 @@ app = Flask(__name__)
 PORT = int(os.environ.get('PORT', 5000))
 
 @app.route('/api', methods=['GET', 'POST', 'PUT', 'DELETE'])
+@IN_PROGRESS.track_inprogress()
 def api_details():
     """
     Endpoint that prints request header, method, and body.
     """
-    headers_str = "\n".join([f"{k}: {v}" for k, v in request.headers.items()])
     method = request.method
-    body = request.get_data(as_text=True)
+    endpoint = '/api'
 
-    # Increment Prometheus counter
-    # Note: status_code is added later, after the response is generated
-    # This is a simplified approach for demonstration.
-    # In production, you might use a decorator or a Flask after_request hook.
-    REQUEST_COUNT.labels(method=method, endpoint='/api', status_code='200').inc()
+    with REQUEST_LATENCY.labels(method=method, endpoint=endpoint).time():
+        body = request.get_data(as_text=True)
+        headers_str = "\n".join([f"{k}: {v}" for k, v in request.headers.items()])
 
-    response_content = f"""Welcome to our demo API, here are the details of your request:
+        # Collect metrics
+        REQUEST_COUNT.labels(method=method, endpoint=endpoint, status_code='200').inc()
+        REQUEST_SIZE.observe(len(body.encode('utf-8')))
+
+        response_content = f"""Welcome to our demo API, here are the details of your request:
 
 ***Headers***:
 {headers_str}
@@ -50,14 +63,13 @@ def api_details():
 ***Body***:
 {body}
 """
-    return response_content, 200 # Return 200 OK status explicitly
+        return response_content, 200
 
 @app.route('/metrics')
 def metrics():
     """
     Endpoint to expose Prometheus metrics.
     """
-    #GAUGE_CONNECTIONS.set(10) # Just setting a dummy value for demonstration
     return generate_latest(), 200, {'Content-Type': 'text/plain; version=0.0.4; charset=utf-8'}
 
 @app.route('/')
