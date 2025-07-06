@@ -89,27 +89,24 @@ jobs:
 
        oc secrets link default ecr-secret --for=pull || true
     - name: Install Helm
-        # Use the official Helm installation script for Linux
       run: |
           curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-        # This script downloads the correct Helm binary for the OS and places it in /usr/local/bin,
-        # which is typically already in the GitHub Actions runner's PATH.
-    - name: Install Gatekeeper via Helm in dev namespace
-      run: |
-        helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts
-        helm repo update
-        helm upgrade --install gatekeeper gatekeeper/gatekeeper \
-            --namespace ameen2607-dev \
-            --create-namespace \
-            --set replicas=1 \
-            --set controllerManager.webhook.port=8443 \
-            --set audit.enabled=false \
-            --set validatingWebhookFailurePolicy=Ignore
-
-    #- name: Change image name in values.yaml
+        
+    #- name: Install Gatekeeper via Helm in dev namespace
     #  run: |
-    #      IMAGE="${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG"
-        #  sed "s|__IMAGE__|$IMAGE|g" api-app-chart/values.yaml     
+    #    helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts
+    #    helm repo update
+    #    helm upgrade --install gatekeeper gatekeeper/gatekeeper \
+    #        --namespace ameen2607-dev \
+    #        --create-namespace \
+    #        --set replicas=1 \
+    #        --set controllerManager.webhook.port=8443 \
+    #        --set audit.enabled=false \
+    #        --set validatingWebhookFailurePolicy=Ignore
+
+    - name: ⚠️ Skipping Gatekeeper Install - Requires Cluster Admin
+      run: echo "Gatekeeper CRD install requires cluster-admin permissions. Skipping in OpenShift Sandbox."   
+
     - name: Deploy via Helm
       run: |
          helm upgrade --install api-app ./api-app-chart \
@@ -117,7 +114,7 @@ jobs:
           --set image.repository=593793064016.dkr.ecr.us-east-1.amazonaws.com/myecr-ameen1 \
           --set image.tag=${{ env.IMAGE_TAG }}
     
-
+    #this if you want to deploy using manifest instead of helm
     #- name: Apply deployment YAML
     #  run: |
     #      IMAGE="${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG"

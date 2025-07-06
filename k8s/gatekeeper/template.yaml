@@ -1,7 +1,10 @@
-apiVersion: constraints.gatekeeper.sh/v1beta1
+apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
   name: k8srequirednonrootsa
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   crd:
     spec:
@@ -14,20 +17,14 @@ spec:
 
         violation[{"msg": msg}] {
           input.review.kind.kind == "Deployment"
-
-          # Rule 1: Must not use default SA
           sa := input.review.object.spec.template.spec.serviceAccountName
           sa == "default"
-
           msg := "Default service account is not allowed."
         }
 
         violation[{"msg": msg}] {
           input.review.kind.kind == "Deployment"
-
-          # Rule 2: Must run as non-root
           container := input.review.object.spec.template.spec.containers[_]
           not container.securityContext.runAsNonRoot
-
           msg := sprintf("Container '%v' must set runAsNonRoot to true.", [container.name])
         }
