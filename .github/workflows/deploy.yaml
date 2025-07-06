@@ -78,5 +78,5 @@ jobs:
     - name: Show app URL
       run: |
         echo "App route:"
-        oc get route api-app -o jsonpath='{.spec.host}{"\n"}'
+        oc get route api-app-route -o jsonpath='{.spec.host}{"\n"}'
 
