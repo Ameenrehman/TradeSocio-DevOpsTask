@@ -27,3 +27,6 @@ htmlcov/
 # Logs and temporary files
 *.log
 tmp/
+
+api-app-chart/templates/service-account.yaml
+api-app-chart/templates/rbac.yaml
