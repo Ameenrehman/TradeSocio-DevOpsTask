@@ -75,7 +75,7 @@ jobs:
       run: |
         container-structure-test test \
           --image ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:${{ env.IMAGE_TAG }} \
-          --config container-structure-test.yaml
+          --config Api-APP/container-structure-test.yaml
 
     #- name: Push Docker image to ECR
     #  run: docker push ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG
