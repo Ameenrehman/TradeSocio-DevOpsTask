@@ -9,4 +9,4 @@ spec:
   containers:
     - name: curl
       image: curlimages/curl:latest
-      command: ["curl", "http://{{ .Values.service.name }}:{{ .Values.service.targetPort }}/"]
+      command: ["curl", "http://{{ .Values.service.name }}:{{ .Values.service.targetPort }}/health"]
