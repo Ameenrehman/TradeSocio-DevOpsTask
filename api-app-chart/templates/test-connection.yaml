@@ -10,3 +10,4 @@ spec:
       image: curlimages/curl:latest
       command: ["sh", "-c", "curl -sf http://{{ .Values.service.name }}:{{ .Values.service.targetPort }}/api || exit 1"]
   restartPolicy: Never
+  
