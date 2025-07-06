@@ -65,8 +65,8 @@ jobs:
         cache-to: type=local,dest=/tmp/.buildx-cache
       #run: docker build -t ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG ./Api-APP
 
-    - name: Push Docker image to ECR
-      run: docker push ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG
+    #- name: Push Docker image to ECR
+    #  run: docker push ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG
    
     - name: Log in to OpenShift
       uses: redhat-actions/oc-login@v1
