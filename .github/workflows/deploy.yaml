@@ -5,8 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'node-backend-app1/**'
-      - 'k8s/node-backend-app1/**'
+      - 'Api-APP/**'
+      - 'k8s/**'
     
   workflow_dispatch:
 env:
