@@ -9,5 +9,5 @@ spec:
     - name: curl
       image: curlimages/curl:latest
       command: ["curl"]
-      args: ["-v", "http://api-app-service:5000/api"]
+      args: ["-v", "http://{{ .Values.Route.host }}/api"]
   restartPolicy: Never
