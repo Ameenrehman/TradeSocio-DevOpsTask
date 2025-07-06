@@ -37,7 +37,7 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Build Docker image
-      run: docker build -t ${{ steps.login-ecr.outputs.registry }}/myecr-ameen:$IMAGE_TAG ./node-backend-app1
+      run: docker build -t ${{ steps.login-ecr.outputs.registry }}/myecr-ameen:$IMAGE_TAG ./Api-APP
 
     - name: Push Docker image to ECR
       run: docker push ${{ steps.login-ecr.outputs.registry }}/myecr-ameen:$IMAGE_TAG
