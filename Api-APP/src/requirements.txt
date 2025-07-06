@@ -1,0 +1,5 @@
+flask==2.2.5
+werkzeug==2.2.3
+prometheus_client # Or the latest stable version
+
+#gunicorn==21.2.0 # for production WSGI server
