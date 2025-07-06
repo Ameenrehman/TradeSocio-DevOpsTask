@@ -37,10 +37,10 @@ jobs:
       uses: aws-actions/amazon-ecr-login@v1
 
     - name: Build Docker image
-      run: docker build -t ${{ steps.login-ecr.outputs.registry }}/myecr-ameen:$IMAGE_TAG ./Api-APP
+      run: docker build -t ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG ./Api-APP
 
     - name: Push Docker image to ECR
-      run: docker push ${{ steps.login-ecr.outputs.registry }}/myecr-ameen:$IMAGE_TAG
+      run: docker push ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG
    
     - name: Log in to OpenShift
       uses: redhat-actions/oc-login@v1
@@ -52,7 +52,7 @@ jobs:
 
     - name: Apply deployment YAML
       run: |
-          IMAGE="${{ steps.login-ecr.outputs.registry }}/myecr-ameen:$IMAGE_TAG"
+          IMAGE="${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG"
           sed "s|__IMAGE__|$IMAGE|g" k8s/deployment.yaml > k8s/deployment-patched.yaml
           oc apply -f k8s/deployment-patched.yaml
         #run: oc apply -f k8s/node-backend-app1/deployment.yml
