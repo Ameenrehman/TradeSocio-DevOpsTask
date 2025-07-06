@@ -1,0 +1,10 @@
+# k8s/gatekeeper/constraint.yaml
+apiVersion: constraints.gatekeeper.sh/v1beta1
+kind: K8sRequiredNonRootSA
+metadata:
+  name: non-default-sa-nonroot
+spec:
+  match:
+    kinds:
+      - apiGroups: ["apps"]
+        kinds: ["Deployment"]
