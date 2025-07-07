@@ -133,7 +133,7 @@ jobs:
           --namespace ameen2607-dev \
           --set image.repository=593793064016.dkr.ecr.us-east-1.amazonaws.com/myecr-ameen1 \
           --set image.tag=${{ env.IMAGE_TAG }}
-          
+
     - name: Helm Test
       run: |
         if ! oc get route api-app-service -n ameen2607-dev > /dev/null 2>&1; then
@@ -163,4 +163,12 @@ jobs:
       run: |
         echo "App route:"
         oc get route api-app-route -o jsonpath='{.spec.host}{"\n"}'
+    - name: Show URL and curl command
+      run: |
+        echo "Fetching OpenShift route for the app..."
+        ROUTE=$(oc get route api-app-service -n ameen2607-dev -o jsonpath='{.spec.host}')
+        echo "App URL: http://$ROUTE/api"
+        echo ""
+        echo "Example curl command:"
+        echo "curl --header \"Content-Type: application/json\" --data '{\"username\":\"devops\",\"password\":\"challenge\"}' http://$ROUTE/api"
 
