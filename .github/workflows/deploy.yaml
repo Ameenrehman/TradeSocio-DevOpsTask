@@ -134,6 +134,7 @@ jobs:
             helm test api-app 
         else
             echo "Route already exists. Skipping expose."
+            helm test api-app 
         fi 
     
     #this if you want to deploy using manifest instead of helm
