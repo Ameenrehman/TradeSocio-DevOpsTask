@@ -30,7 +30,7 @@ This repository presents my solution to the DevOps challenge, demonstrating prof
 
 ## Project Overview
 
-This project implements a simple Flask application that echoes request details (headers, method, and body). It's designed to showcase a full DevOps lifecycle, from development to automated deployment on Kubernetes. The aim was to deliver a solution that is robust, scalable, and easy to manage.
+This project implements a simple Flask application that echoes request details (headers, method, and body). It's designed to showcase a full DevOps lifecycle, from development to automated deployment on Kubernetes. The aim was to deliver a solution that is robust, scalable, and easy to manage. This app is deployed on Redhat Openshift Sandbox (30 day trial version) for better testing and availability.
 
 ---
 
@@ -41,98 +41,88 @@ Here's a breakdown of the tasks addressed in this repository:
 ### Task 0: Public Git Repository
 
 This repository itself serves as the public Git repository for the source code, hosted on GitHub:
-https://github.com/Ameenrehman/TradeSocio-DevOpsTask.git
+`https://github.com/Ameenrehman/TradeSocio-DevOpsTask.git`
 
 ### Task 1: API Service
 
 The API service is implemented using [**Flask**].
-You can find the source code in the [`./api-service`](./api-service) directory.
+You can find the source code in the [`./Api-APP/src/app.py`](./app.py) directory.
 
 **Key Features & Best Practices:**
 
-* **Technology Stack**: Node.js with Express.js for a lightweight and efficient web server.
+* **Technology Stack**: Flask and Python for building simple api service.
 * **Request Echoing**: Captures and displays request headers, method, and body as specified.
 * **Cloud-Native Principles**:
-    * **The Twelve-Factor App**: Adherence to principles like [list specific principles you followed, e.g., "Config stored in the environment," "Logs as event streams"].
+    * Adherence to clout native principle like explicitly declares dependencies, variables for configuration, application is stateless, Port Binding, while making the app.py service.
 * **Instrumentation (Bonus)**:
-    * **Prometheus Metrics**: The application is instrumented with a [**Prometheus Counter/Gauge**] to track [**describe what it tracks, e.g., "total requests received"**]. You can access these metrics at the `/metrics` endpoint.
+    * **Prometheus Metrics**: The application is instrumented with a [**Prometheus Counter/Gauge**] to track [**Counter (http_requests_total), Histogram (http_request_duration_seconds), Summary (http_request_size_bytes), Gauge (http_requests_in_progress)**]. 
+    You can access these metrics at the `/metrics` endpoint.
 
 ### Task 2: Dockerize
 
 A `Dockerfile` is provided to containerize the API service. This allows for consistent execution across various environments.
 
-You can find the `Dockerfile` in the [`./api-service`](./api-service) directory.
+You can find the `Dockerfile` in the [`./Api-APP/Dockerfile`](./.Api-APP) directory.
 
 **Docker Best Practices Applied (Bonus):**
 
 * **Multi-stage Build**: Utilizes a multi-stage build to create a small, efficient production image by separating build-time dependencies from runtime dependencies.
 * **Proper Layer Structure**: Arranges `COPY` and `RUN` instructions to maximize Docker layer caching, speeding up subsequent builds.
-* **Non-root User**: The container runs as a non-root user for enhanced security.
-* **Security Practices**: [Mention other security practices, e.g., "Using official base images," "Minimizing attack surface by only installing necessary packages"].
+* **Non-root User**: The container runs as a non-root user for enhanced security..
 * **Integration Test (Bonus)**:
-    * A simple integration test for the Docker image is included using [**container-structure-test**]. The test validates [**describe what it validates, e.g., "file existence, correct permissions, and exposed ports"**]. You can find the test configuration in [`./test/docker-integration-test.yaml`](./test/docker-integration-test.yaml).
+    * A simple integration test for the Docker image is included using [**container-structure-test.yaml**]. The test validates [**"flask existence, app.py existence, requirement.txt file existence, non-root user presence"**]. You can find the test configuration in [`./Api-APP/container-structure-test.yaml`](./container-structure-test.yaml).
 
 ### Task 3: CI/CD
 
 A CI/CD pipeline is implemented using [**GitHub Actions**] to automate the build, test, and (optional) deployment process.
 
-The GitHub Actions workflow definition is located at [`./.github/workflows/main.yml`](./.github/workflows/main.yml).
+The GitHub Actions workflow definition is located at [`./.github/workflows/deploy.yml`](./.github/workflows/deploy.yml).
 
-**Pipeline Stages:**
+**Pipeline Stages and Steps:**
 
-1.  **Build**: Builds the Docker image of the API service.
-2.  **Test**: Runs the Docker integration tests (if implemented) and any unit/integration tests for the API service.
-3.  **Scan**: (Optional) Integrates security scanning tools (e.g., Trivy) for vulnerability checks.
-4.  **Publish**: Pushes the Docker image to a container registry (e.g., Docker Hub, GitHub Container Registry).
-5.  **Deploy**: (Optional - if automated deployment is configured) Deploys the Helm chart to the Kubernetes cluster.
+1.  **Build and Deploy**: For simplicity i have added only one stage with all necessary steps/jobs.
+    * Set up JOb -> Checkout Source Code -> Cache pip dependency -> Setup Docker Buildx -> Cache Docker Layers -> Install Openshift CLI -> Config AWS Credentials -> Login ECR -> Build Docker Image -> Install container structure library -> Pull image for container structure test -> login to openshift -> Create secret for ECR -> Install Helm -> Deploy via Helm -> Helm test -> Show app url and curl url 
+
 
 ### Task 4: Helm Chart
 
-A Helm chart is created to package the API service for deployment to Kubernetes, ensuring all necessary components for a production-like environment are included.
+A Helm chart is created to package the API service for deployment to Openshift, ensuring all necessary components for a production-like environment are included.
 
-The Helm chart is located in the [`./helm-chart/api-service`](./helm-chart/api-service) directory.
+The Helm chart is located in the [`./api-app-chart`](./api-app-chart) directory.
 
 **Chart Components:**
 
 * **Deployment**: Manages the API service pods.
 * **Service**: Exposes the API service within the cluster.
-* **Ingress**: Provides external access to the API service (if `ingress.enabled` is true).
-* **Service Account**: Defines a dedicated service account for the deployment (for OPA compliance).
-* **Role/RoleBinding**: (If applicable) Defines necessary RBAC permissions for the service account.
-* **ConfigMap/Secret**: (If applicable) Manages configuration or sensitive data.
+* **Route**: Provides external access to the API service via routes.
+* **Gatekeeper**: Provides OPA #TODO ( this is not tested as openshift sandbox doesnt have cluster admin level privileges )
+* **Values**: Provide values for our templates in helm cchart
 
 **Bonus Points:**
-
-* **Helm Hooks**: [**Describe any Helm hooks implemented, e.g., "A `pre-install` hook is used to run database migrations before the application pods start."**] See `templates/migration-job.yaml` for an example.
 * **Helm Tests**: Includes Helm tests to verify the chart's correctness and ensure resources are rendered as expected. Run `helm test api-service` after deployment. See `templates/tests/test-connection.yaml` for an example.
 
-### Task 5: Deploy to Kubernetes
+### Task 5: Deploy to Openshift ( Redhhat Openshift Sandbox K8 Free Trial)
 
 The API service is designed to be deployed to a Kubernetes environment.
 
-This solution has been tested on [**Minikube/k3s/GKE**].
+This solution has been tested on [**Opendhift/minikube**].
 
 **Bonus Points:**
 
 * **Open Policy Agent (OPA) Integration**:
-    * **Deployment**: OPA (with Gatekeeper) has been deployed to the cluster.
-    * **Policy**: An OPA test policy is implemented to validate two key security practices for deployments:
+    * **Deployment**: OPA (with Gatekeeper) has been made to be deployed to the cluster. #TODO ( not tested due to insufficient acces on oepnshift)
+    * **Policy/template**: An OPA test policy is implemented to validate two key security practices for deployments: #TODO ( not executed just place the file)
         1.  **Non-default Service Account**: Ensures that deployments do not use the `default` service account.
-        2.  **Non-root Container**: Validates that containers do not run as the `root` user (`runAsNonRoot: true` or `allowPrivilegeEscalation: false`).
-    * The OPA policy definition can be found in [`./kubernetes/opa-policies`](./kubernetes/opa-policies).
+        2.  **Non-root Container**: Validates that containers do not run as the `root` user 
+    * The OPA policy definition can be found in [`./api-app-cahrt/templates/gatekeeper-template.yaml`](./gatekeeper policy template).
 
 ### Task 6: Documentation
 
 This `README.md` file serves as the primary documentation, providing clear instructions for building, deploying, and testing the service.
 
-* **Clear Instructions**: Detailed steps are provided in the "How to Build, Deploy, and Test" section.
-* **Meaningful Commit Messages**: Git commit messages reflect the changes made and their purpose.
-* **In-code Comments**: Relevant comments are included in the source code and configuration files where complexity warrants explanation.
-
-### Task 7: Additional Ideas
+### Task 7: Additional Ideas: (Suggestions)
 
 * **Automated Security Scanning**: Integration of tools like Trivy into the CI/CD pipeline for vulnerability scanning of Docker images.
-* **Container Structure Tests**: Using `container-structure-test` for basic validation of the Docker image.
 * **Prometheus Metrics**: Basic application-level metrics exposed via Prometheus client libraries for observability.
 * **Structured Logging**: (If implemented) Using a structured logging library for easier log analysis.
 
@@ -145,18 +135,53 @@ Follow these instructions to get the API service up and running.
 ### Prerequisites
 
 Before you begin, ensure you have the following installed:
-
+* [**VS CODE**]
 * [**Git**](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
-* [**Docker Desktop**](https://www.docker.com/products/docker-desktop/) or Docker Engine
-* [**Node.js**](https://nodejs.org/en/download/) (if you want to run the API service locally without Docker initially)
+* [**Docker Desktop**](https://www.docker.com/products/docker-desktop/) or Docker Engine for local testing 
 * [**kubectl**](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 * [**Helm**](https://helm.sh/docs/intro/install/)
-* A Kubernetes cluster (e.g., [**Minikube**](https://minikube.sigs.k8s.io/docs/start/), [**k3s/k3d**](https://k3d.io/), or access to a cloud-based cluster like [**GKE**](https://cloud.google.com/kubernetes-engine/docs/quickstart))
+* [**Docker **]
+* A Kubernetes cluster (e.g., [**Minikube**](https://minikube.sigs.k8s.io/docs/start/), Openshift Sandbox)
 
-### Building the Docker Image
+For Local Testing :
+### Clone the Repo
+` git clone https://github.com/Ameenrehman/TradeSocio-DevOpsTask.git `
 
-Navigate to the `api-service` directory and build the Docker image:
+After cloning the repo, open the folder with vs code or any other.
 
+### Build & RUN Docker Image
 ```bash
-cd api-service
-docker build -t api-service:latest .
+cd Api-APP
+docker build -t api-app .
+docker run -d -p 5000:5000 --name api-app api-app
+```
+
+This will run your api servie app on `localhost:5000` using docker desktop.
+
+For Prod Testing:
+### Clone repo
+` git clone https://github.com/Ameenrehman/TradeSocio-DevOpsTask.git `
+
+After cloning copying the folder remove the .git from it and move the folder/files to your git initialize folder
+
+### Setup Github Secrets and ENV Variable
+Before running it on Github Action your repo should have ENV/secrets store in github:
+    * AWS_ACCESS_KEY_ID
+    * AWS_SECRET_ACCESS_KEY
+    * OPENSHIFT_SERVER_URL
+    * OPENSHIFT_TOKEN
+
+For AWs Acess key and secret access key, refer : `https://docs.aws.amazon.com/keyspaces/latest/devguide/create.keypair.html`
+For openshift server url and toker , First make a trial accoutn on: `https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-developer-sandbox-trial` 
+Then, after siging up , go to your username ( top right) -> copy login command -> then take the server url and token from there.
+Now you are good to go.
+
+### Running Github Action
+so when you push in any of the directory :
+    ``` paths:
+      - 'Api-APP/**'
+      - 'k8s/**'
+      - 'api-app-chart/**'
+    ```
+your pipeline will automatically gets triggered, or you can manually trigger the pipeline using workflow dispatch after pushing the code to your repo.
+
