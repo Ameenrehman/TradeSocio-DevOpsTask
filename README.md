@@ -73,7 +73,7 @@ You can find the `Dockerfile` in the [`./Api-APP/Dockerfile`](./Api-APP/Dockerfi
 
 A CI/CD pipeline is implemented using [**GitHub Actions**] to automate the build, test, and (optional) deployment process.
 
-The GitHub Actions workflow definition is located at [`./workflows/deploy.yml`](./workflows/deploy.yml).
+The GitHub Actions workflow definition is located at [`.github/workflows/deploy.yaml`](.github/workflows/deploy.yaml).
 
 **Pipeline Stages and Steps:**
 
