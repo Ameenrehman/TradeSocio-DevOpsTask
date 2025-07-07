@@ -67,13 +67,13 @@ You can find the `Dockerfile` in the [`./Api-APP/Dockerfile`](./Api-APP/Dockerfi
 * **Proper Layer Structure**: Arranges `COPY` and `RUN` instructions to maximize Docker layer caching, speeding up subsequent builds.
 * **Non-root User**: The container runs as a non-root user for enhanced security..
 * **Integration Test (Bonus)**:
-    * A simple integration test for the Docker image is included using [**container-structure-test.yaml**]. The test validates [**"flask existence, app.py existence, requirement.txt file existence, non-root user presence"**]. You can find the test configuration in [`./Api-APP/container-structure-test.yaml`](./container-structure-test.yaml).
+    * A simple integration test for the Docker image is included using [**container-structure-test.yaml**]. The test validates [**"flask existence, app.py existence, requirement.txt file existence, non-root user presence"**]. You can find the test configuration in [`./Api-APP/container-structure-test.yaml`](./Api-APP/container-structure-test.yaml).
 
 ### Task 3: CI/CD
 
 A CI/CD pipeline is implemented using [**GitHub Actions**] to automate the build, test, and (optional) deployment process.
 
-The GitHub Actions workflow definition is located at [`./deploy.yml`](.github/workflows/).
+The GitHub Actions workflow definition is located at [`./.github/workflows/deploy.yml`](./.github/workflows/deploy.yml).
 
 **Pipeline Stages and Steps:**
 
