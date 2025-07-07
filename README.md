@@ -112,6 +112,8 @@ This solution has been tested on [**Opendhift**].
         1.  **Non-default Service Account**: Ensures that deployments do not use the `default` service account.
         2.  **Non-root Container**: Validates that containers do not run as the `root` user 
     * The OPA policy definition can be found in [`./api-app-cahrt/templates/gatekeeper-template.yaml`](./gatekeeper policy template).
+
+# Deployed app on openshfit images
 ![Deployed on Openshift](image-1.png)
 ![Deployed on openshift](image-2.png)
 ### Task 6: Documentation
@@ -121,8 +123,8 @@ This `README.md` file serves as the primary documentation, providing clear instr
 ### Task 7: Additional Ideas: (Suggestions)
 
 * **Automated Security Scanning**: Integration of tools like Trivy into the CI/CD pipeline for vulnerability scanning of Docker images.
-* **Prometheus Metrics**: Basic application-level metrics exposed via Prometheus client libraries for observability.
-* **Structured Logging**: (If implemented) Using a structured logging library for easier log analysis.
+* **Prometheus Metrics**: Setup of Prometheus and Grafana to visualize and scrape those metrics at /metric endpoint in our app.
+* **Structured Logging**: Using a structured logging library for easier log analysis.
 
 ---
 
@@ -164,14 +166,15 @@ After cloning copying the folder remove the .git from it and move the folder/fil
 
 ### Setup Github Secrets and ENV Variable
 Before running it on Github Action your repo should have ENV/secrets store in github:
+
 AWS_ACCESS_KEY_ID
 AWS_SECRET_ACCESS_KEY
 OPENSHIFT_SERVER_URL
 OPENSHIFT_TOKEN
 
-For AWs Acess key and secret access key, refer : `https://docs.aws.amazon.com/keyspaces/latest/devguide/create.keypair.html`.
+For AWs Acess key and secret access key, refer : `https://docs.aws.amazon.com/keyspaces/latest/devguide/create.keypair.html`. 
 
-For openshift server url and toker , First make a trial accoutn on: `https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-developer-sandbox-trial` .
+For openshift server url and toker , First make a trial accoutn on: `https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-developer-sandbox-trial`. 
 Then, after siging up , go to your username ( top right) -> copy login command -> then take the server url and token from there.
 Now you are good to go.
 
