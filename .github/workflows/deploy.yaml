@@ -28,7 +28,7 @@ jobs:
         key: ${{ runner.os }}-pip-${{ hashFiles('Api-APP/requirements.txt') }}
         restore-keys: |
           ${{ runner.os }}-pip-
-    # Cache Docker buildx layers
+    # Cache Docker buildx layers into github actions cache
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v3
 
@@ -46,12 +46,14 @@ jobs:
         tar -xzf oc.tar.gz
         sudo mv oc /usr/local/bin/oc
         oc version 
+
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1
       with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
+
     - name: Log in to Amazon ECR
       id: login-ecr
       uses: aws-actions/amazon-ecr-login@v1
@@ -64,15 +66,18 @@ jobs:
         tags: ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:${{ env.IMAGE_TAG }}
         cache-from: type=local,src=/tmp/.buildx-cache
         cache-to: type=local,dest=/tmp/.buildx-cache
-      #run: docker build -t ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG ./Api-APP
+    #  #run: docker build -t ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:$IMAGE_TAG ./Api-APP
+
     - name: Install container-structure-test binary
       run: |
         curl -LO https://storage.googleapis.com/container-structure-test/latest/container-structure-test-linux-amd64
         chmod +x container-structure-test-linux-amd64
         sudo mv container-structure-test-linux-amd64 /usr/local/bin/container-structure-test
+    
     - name: Pull image from ECR for structure tests
       run: |
         docker pull ${{ steps.login-ecr.outputs.registry }}/myecr-ameen1:${{ env.IMAGE_TAG }}
+
     - name: Run Container Structure Tests
       run: |
         container-structure-test test \
@@ -101,10 +106,12 @@ jobs:
           --dry-run=client -o yaml | kubectl apply -f -
 
        oc secrets link default ecr-secret --for=pull || true
+
     - name: Install Helm
       run: |
           curl -fsSL https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
-        
+    
+    # uncomment this if you want to install gatekeeper ( cant install in OpenShift Sandbox )
     #- name: Install Gatekeeper via Helm in dev namespace
     #  run: |
     #    helm repo add gatekeeper https://open-policy-agent.github.io/gatekeeper/charts
@@ -126,7 +133,8 @@ jobs:
           --namespace ameen2607-dev \
           --set image.repository=593793064016.dkr.ecr.us-east-1.amazonaws.com/myecr-ameen1 \
           --set image.tag=${{ env.IMAGE_TAG }}
-    - name: Expose service if route doesn't exist
+          
+    - name: Helm Test
       run: |
         if ! oc get route api-app-service -n ameen2607-dev > /dev/null 2>&1; then
             echo "Exposing service..."

@@ -1,10 +1,8 @@
+#not tested 
 apiVersion: templates.gatekeeper.sh/v1beta1
 kind: ConstraintTemplate
 metadata:
   name: k8srequirednonrootsa
-  annotations:
-    "helm.sh/hook": post-install
-    "helm.sh/hook-delete-policy": before-hook-creation
 spec:
   crd:
     spec:
