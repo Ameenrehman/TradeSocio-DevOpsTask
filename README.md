@@ -166,22 +166,32 @@ After cloning copying the folder remove the .git from it and move the folder/fil
 
 ### Setup Github Secrets and ENV Variable
 Before running it on Github Action your repo should have ENV/secrets store in github:
-    * AWS_ACCESS_KEY_ID
-    * AWS_SECRET_ACCESS_KEY
-    * OPENSHIFT_SERVER_URL
-    * OPENSHIFT_TOKEN
+AWS_ACCESS_KEY_ID
+AWS_SECRET_ACCESS_KEY
+OPENSHIFT_SERVER_URL
+OPENSHIFT_TOKEN
 
-For AWs Acess key and secret access key, refer : `https://docs.aws.amazon.com/keyspaces/latest/devguide/create.keypair.html`
-For openshift server url and toker , First make a trial accoutn on: `https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-developer-sandbox-trial` 
+For AWs Acess key and secret access key, refer : `https://docs.aws.amazon.com/keyspaces/latest/devguide/create.keypair.html`.
+
+For openshift server url and toker , First make a trial accoutn on: `https://www.redhat.com/en/technologies/cloud-computing/openshift/openshift-developer-sandbox-trial` .
 Then, after siging up , go to your username ( top right) -> copy login command -> then take the server url and token from there.
 Now you are good to go.
 
 ### Running Github Action
-so when you push in any of the directory :
-    ``` paths:
-      - 'Api-APP/**'
+So when you push in any of the directory :
+    ```- 'Api-APP/**'
       - 'k8s/**'
       - 'api-app-chart/**'
     ```
 your pipeline will automatically gets triggered, or you can manually trigger the pipeline using workflow dispatch after pushing the code to your repo.
+
+### Get URL
+* You can see the app up running on : `https://api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com`  or `https://api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/metrics`. ( or see the url of route in github action output)
+
+* Curl :
+ `curl --header "Content-Type: application/json" --data '{"username":"devops","password":"challenge"}' http://api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/api`
+
+*^NOTE: Route: `http://api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com`.
+        Curl: `http://api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/api`.
+As routes are used to access the application , they cant be curl, so instead use the exposed service of the app to route it.
 
