@@ -188,9 +188,10 @@ your pipeline will automatically gets triggered, or you can manually trigger the
 ### Curl:
  `curl --header "Content-Type: application/json" --data '{"username":"devops","password":"challenge"}' http://api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/api`.
 
-*^NOTE: Route: `http://api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com`.
+*^NOTE: 
+Route: `http://api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com`.
 
-        Curl: `http://api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/api` .
+Curl: `http://api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/api` .
 
 As routes are used to access the application , they cant be curl, so instead use the exposed service of the app to route it.
 
