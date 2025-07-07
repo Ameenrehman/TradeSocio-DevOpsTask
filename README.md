@@ -185,15 +185,17 @@ your pipeline will automatically gets triggered, or you can manually trigger the
 ### Get URL
 * You can see the app up running on : `https://api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com`  or `https://api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/metrics`. ( or see the url of route in github action output)
 
-![alt text](image-1.png)
 
-![alt text](image-2.png)
+![App URL](image-5.png)
+
+![/metrics](image-4.png)
+
 
 
 ### Curl:
  `curl --header "Content-Type: application/json" --data '{"username":"devops","password":"challenge"}' http://api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/api`.
 
-![alt text](image-3.png)
+![CURL](image-3.png)
 
 
 *^NOTE: 
