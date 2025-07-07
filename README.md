@@ -13,18 +13,15 @@ This repository presents my solution to the DevOps challenge, demonstrating prof
   - [Task 2: Dockerize](#task-2-dockerize)
   - [Task 3: CI/CD](#task-3-cicd)
   - [Task 4: Helm Chart](#task-4-helm-chart)
-  - [Task 5: Deploy to Kubernetes](#task-5-deploy-to-kubernetes)
+  - [Task 5: Deploy to Openshift ( Redhhat Openshift Sandbox K8 Free Trial)](#task-5-Deploy-to-Openshift)
   - [Task 6: Documentation](#task-6-documentation)
   - [Task 7: Additional Ideas](#task-7-additional-ideas)
 - [How to Build, Deploy, and Test](#how-to-build-deploy-and-test)
   - [Prerequisites](#prerequisites)
-  - [Building the Docker Image](#building-the-docker-image)
-  - [Running the API Service Locally (Docker)](#running-the-api-service-locally-docker)
-  - [Deploying to Kubernetes (Helm)](#deploying-to-kubernetes-helm)
-  - [Testing the API Service](#testing-the-api-service)
-- [Project Structure](#project-structure)
-- [Future Improvements / TODOs](#future-improvements--todos)
-- [Contact](#contact)
+  - [For Local Testing:](#for-local-testing)
+  - [For Prod Testing:](#for-prod-testing)
+  - [Get URL](#get-url)
+  - [Curl:](#curl)
 
 ---
 
@@ -46,7 +43,7 @@ This repository itself serves as the public Git repository for the source code, 
 ### Task 1: API Service
 
 The API service is implemented using [**Flask**].
-You can find the source code in the [`./Api-APP/src/app.py`](./app.py) directory.
+You can find the source code in the [`./Api-APP/src/app.py`](./Api-APP/src/app.py) directory.
 
 **Key Features & Best Practices:**
 
@@ -62,7 +59,7 @@ You can find the source code in the [`./Api-APP/src/app.py`](./app.py) directory
 
 A `Dockerfile` is provided to containerize the API service. This allows for consistent execution across various environments.
 
-You can find the `Dockerfile` in the [`./Api-APP/Dockerfile`](./.Api-APP) directory.
+You can find the `Dockerfile` in the [`./Api-APP/Dockerfile`](./Api-APP/Dockerfile) directory.
 
 **Docker Best Practices Applied (Bonus):**
 
@@ -143,7 +140,7 @@ Before you begin, ensure you have the following installed:
 * [**Docker **]
 * A Kubernetes cluster (e.g., [**Minikube**](https://minikube.sigs.k8s.io/docs/start/), Openshift Sandbox)
 
-For Local Testing :
+### For Local Testing:
 ### Clone the Repo
 ` git clone https://github.com/Ameenrehman/TradeSocio-DevOpsTask.git `
 
@@ -158,7 +155,7 @@ docker run -d -p 5000:5000 --name api-app api-app
 
 This will run your api servie app on `localhost:5000` using docker desktop.
 
-For Prod Testing:
+### For Prod Testing:
 ### Clone repo
 ` git clone https://github.com/Ameenrehman/TradeSocio-DevOpsTask.git `
 
@@ -188,7 +185,7 @@ your pipeline will automatically gets triggered, or you can manually trigger the
 ### Get URL
 * You can see the app up running on : `https://api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com`  or `https://api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/metrics`. ( or see the url of route in github action output)
 
-* Curl :
+### Curl:
  `curl --header "Content-Type: application/json" --data '{"username":"devops","password":"challenge"}' http://api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/api`
 
 *^NOTE: Route: `http://api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com`.
