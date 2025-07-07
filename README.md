@@ -73,7 +73,7 @@ You can find the `Dockerfile` in the [`./Api-APP/Dockerfile`](./Api-APP/Dockerfi
 
 A CI/CD pipeline is implemented using [**GitHub Actions**] to automate the build, test, and (optional) deployment process.
 
-The GitHub Actions workflow definition is located at [`./.github/workflows/deploy.yml`](./.github/workflows/deploy.yml).
+The GitHub Actions workflow definition is located at [`./deploy.yml`](.github/workflows/deploy.yml).
 
 **Pipeline Stages and Steps:**
 
@@ -102,8 +102,8 @@ The Helm chart is located in the [`./api-app-chart`](./api-app-chart) directory.
 
 The API service is designed to be deployed to a Kubernetes environment.
 
-This solution has been tested on [**Opendhift/minikube**].
-
+This solution has been tested on [**Opendhift**].
+(NOTE: I used Helm to deploy the app on openshift, though i have placed the k8s manifest file also and the job to run the manfiest file vai github action , just uncomment those line.).
 **Bonus Points:**
 
 * **Open Policy Agent (OPA) Integration**:
@@ -193,5 +193,5 @@ Route: `http://api-app-route-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com`.
 
 Curl: `http://api-app-service-ameen2607-dev.apps.rm3.7wse.p1.openshiftapps.com/api` .
 
-As routes are used to access the application , they cant be curl, so instead use the exposed service of the app to route it.
+As routes are used to access the application , they cant be curl, so instead use the exposed service of the app to curl it.
 
