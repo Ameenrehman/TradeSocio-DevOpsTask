@@ -131,6 +131,7 @@ jobs:
         if ! oc get route api-app-service -n ameen2607-dev > /dev/null 2>&1; then
             echo "Exposing service..."
             oc expose svc/api-app-service -n ameen2607-dev
+            helm test api-app 
         else
             echo "Route already exists. Skipping expose."
         fi 
