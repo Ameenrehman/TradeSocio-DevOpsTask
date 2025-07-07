@@ -112,7 +112,8 @@ This solution has been tested on [**Opendhift**].
         1.  **Non-default Service Account**: Ensures that deployments do not use the `default` service account.
         2.  **Non-root Container**: Validates that containers do not run as the `root` user 
     * The OPA policy definition can be found in [`./api-app-cahrt/templates/gatekeeper-template.yaml`](./gatekeeper policy template).
-
+![Deployed on Openshift](image-1.png)
+![Deployed on openshift](image-2.png)
 ### Task 6: Documentation
 
 This `README.md` file serves as the primary documentation, providing clear instructions for building, deploying, and testing the service.
